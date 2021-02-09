@@ -1,5 +1,5 @@
 # Introduction
-This assignment was specified in the Stanford CS107 course, [[Assignment 3][https://see.stanford.edu/materials/icsppcs107/11-Assignment-3-Vector.pdf]]. I implemented the std::vector interface found in C++ in pure C, allowing the use of generics/templates by using an elemSize parameter to denote the type.
+This assignment was specified in the Stanford CS107 course, [Assignment 3](https://see.stanford.edu/materials/icsppcs107/11-Assignment-3-Vector.pdf). I implemented the std::vector interface found in C++ in pure C, allowing the use of generics/templates by using an elemSize parameter to denote the type.
 Hence, one can instantiate a vector of type int of initial length 10 as follows:
 ```
 vector int_vec;
