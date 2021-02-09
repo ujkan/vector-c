@@ -73,7 +73,7 @@ void VectorInsert(vector *v, const void *elemAddr, int position)
     {
         memmove((void *) ((char *) source + v -> elemSize), source, (v -> elemSize) * (v -> logLen - position));
     }
-    memcpy(((char *) (v -> elements)) + (position * v -> elemSize), elemAddr, v -> elemSize); // using source as first arg doesn't work as source gets changed during memmove !!!!!!
+    memcpy(((char *) (v -> elements)) + (position * v -> elemSize), elemAddr, v -> elemSize); // NOTE: source as first argument is incorrect as it may be altered by memmove in the preceding if-statement.
 
     v -> logLen++;}
 
@@ -96,8 +96,7 @@ void VectorDelete(vector *v, int position)
     if (position < v -> logLen - 1)
     {
         elemAddr = (char *) v -> elements + position * v -> elemSize;
-        // assert(elemAddr);
-        memcpy(elemAddr, (char *) elemAddr + v -> elemSize, (v -> elemSize) * (v -> logLen - position - 1)); // remember to scale by elemSize
+        memcpy(elemAddr, (char *) elemAddr + v -> elemSize, (v -> elemSize) * (v -> logLen - position - 1)); // NOTE: remember to scale by elemSize
     }
     v -> logLen--;
 }
@@ -117,14 +116,11 @@ void VectorSort(vector *v, VectorCompareFunction compare)
     qsort(v -> elements, v -> logLen, v -> elemSize, compare);
 }
 
-
-
 void VectorMap(vector *v, VectorMapFunction mapFn, void *auxData)
 {
     assert(mapFn);
     for (int i = 0; i < v -> logLen; i++)
     {
-        // printf("i: %d -- logLen: %d\n", i, v -> logLen);
         assert(VectorNth(v,i));
         mapFn(VectorNth(v, i), auxData);
     }
@@ -149,6 +145,6 @@ int VectorSearch(const vector *v, const void *key, VectorCompareFunction searchF
         found = lfind(key, VectorNth(v, startIndex), &length, v -> elemSize, searchFn);
     }
     if (found)
-    {return ((char *) (found) - (char *) (v -> elements)) / v -> elemSize;}
+        return ((char *) (found) - (char *) (v -> elements)) / v -> elemSize;
     return -1;
 }
