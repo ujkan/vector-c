@@ -65,7 +65,6 @@ void VectorInsert(vector *v, const void *elemAddr, int position)
     assert(position <= v -> logLen);
     if (v -> logLen == v -> allocLen)
     {
-        printf("\nGREW\n");
         VectorGrow(v);
     }
     void *source = ((char *) (v -> elements)) + (position * v -> elemSize);
@@ -73,9 +72,11 @@ void VectorInsert(vector *v, const void *elemAddr, int position)
     {
         memmove((void *) ((char *) source + v -> elemSize), source, (v -> elemSize) * (v -> logLen - position));
     }
-    memcpy(((char *) (v -> elements)) + (position * v -> elemSize), elemAddr, v -> elemSize); // NOTE: source as first argument is incorrect as it may be altered by memmove in the preceding if-statement.
+    // Crucial: source as first argument is incorrect as it may be altered by memmove in the preceding if-statement.
+    memcpy(((char *) (v -> elements)) + (position * v -> elemSize), elemAddr, v -> elemSize);
 
-    v -> logLen++;}
+    v -> logLen++;
+}
 
 void VectorAppend(vector *v, const void *elemAddr)
 {
@@ -96,7 +97,8 @@ void VectorDelete(vector *v, int position)
     if (position < v -> logLen - 1)
     {
         elemAddr = (char *) v -> elements + position * v -> elemSize;
-        memcpy(elemAddr, (char *) elemAddr + v -> elemSize, (v -> elemSize) * (v -> logLen - position - 1)); // NOTE: remember to scale by elemSize
+        // Crucial: scale by elemSize in the following memcpy call.
+        memcpy(elemAddr, (char *) elemAddr + v -> elemSize, (v -> elemSize) * (v -> logLen - position - 1));
     }
     v -> logLen--;
 }
@@ -146,5 +148,5 @@ int VectorSearch(const vector *v, const void *key, VectorCompareFunction searchF
     }
     if (found)
         return ((char *) (found) - (char *) (v -> elements)) / v -> elemSize;
-    return -1;
+    return kNotFound;
 }
